@@ -34,8 +34,8 @@ struct Four_bar_linkage
         body_b = Body(mass, com, inertia);
         joint_b = Joint(JointTypeRevolute, Vector3d(0., 0., 1.));
         Matrix3_t body_b_rot;
-        body_b_rot << 0., -1., 0.,
-            1., 0., 0.,
+        body_b_rot << 0., 1., 0.,
+            -1., 0., 0.,
             0., 0., 1.;
         Vector3d body_b_trans(0.139, 0.138, 0.);
         SpatialTransform body_b_tf(body_b_rot, body_b_trans);
@@ -44,8 +44,8 @@ struct Four_bar_linkage
         body_c = Body(mass, com, inertia);
         joint_c = Joint(JointTypeRevolute, Vector3d(0., 0., 1.));
         Matrix3_t body_c_rot;
-        body_c_rot << 0., 1., 0.,
-            -1., 0., 0.,
+        body_c_rot << 0., -1., 0.,
+            1., 0., 0.,
             0., 0., 1.;
         Vector3d body_c_trans(-0.141, -0.832, 0.);
         SpatialTransform body_c_tf(body_c_rot, body_c_trans);
@@ -57,8 +57,8 @@ struct Four_bar_linkage
             Vector3d(0., 0., 1.));
 
         Matrix3_t body_d_rot;
-        body_d_rot << 0., 1., 0.,
-            -1., 0., 0.,
+        body_d_rot << 0., -1., 0.,
+            1., 0., 0.,
             0., 0., 1.;
         Vector3d body_d_trans(-0.14, -0.83, 0.);
         SpatialTransform body_d_tf(body_d_rot, body_d_trans);

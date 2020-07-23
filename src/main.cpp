@@ -18,8 +18,8 @@ public:
     //constructor
     Ambf_sub_pub(const ros::Publisher &pub) : pub_(pub), rbdl_obj_(), pos_d{0., 0., 0.}, cmd_msg(), header_()
     {
-        cmd_msg.enable_position_controller = 1;
-        cmd_msg.position_controller_mask = {1};
+        cmd_msg.enable_position_controller = 0;
+        cmd_msg.position_controller_mask = {0};
     }
     //methods
     void StateCallback(const ambf_msgs::ObjectState::ConstPtr &msg)

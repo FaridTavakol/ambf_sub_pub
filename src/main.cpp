@@ -2,6 +2,7 @@
 #include "ambf_msgs/ObjectState.h"
 #include "ambf_msgs/ObjectCmd.h"
 #include "geometry_msgs/Vector3.h"
+#include "std_msgs/Header.h"
 #include <iostream>
 #include "Dynamics.h"
 #include <rbdl/rbdl.h>
@@ -11,25 +12,51 @@ using namespace RigidBodyDynamics;
 using namespace RigidBodyDynamics::Math;
 // #include "four_bar_linkage_transmission.h"
 
-void StateCallback(const ambf_msgs::ObjectState::ConstPtr &msg)
+class Ambf_sub_pub
 {
-    Dynamics dynamics_obj;
-    std::vector<double>
-        pos_d{0., 0., 0.};
-    std::vector<float> pos = msg->joint_positions;
-    ROS_INFO("joint 1 angle is: %f ", pos.at(0));
-    pos_d.at(0) = static_cast<double>(pos.at(0));
-    pos_d.at(1) = static_cast<double>(pos.at(1));
-    pos_d.at(2) = static_cast<double>(pos.at(2));
-    dynamics_obj.get_G(pos_d);
-}
+public:
+    //constructor
+    Ambf_sub_pub(const ros::Publisher &pub) : pub_(pub), rbdl_obj_(), pos_d{0., 0., 0.}, cmd_msg(), header_()
+    {
+        cmd_msg.enable_position_controller = 1;
+        cmd_msg.position_controller_mask = {1};
+    }
+    //methods
+    void StateCallback(const ambf_msgs::ObjectState::ConstPtr &msg)
+    {
+        std::vector<float> pos = msg->joint_positions;
+        // ROS_INFO("joint 1 angle is: %f ", pos.at(0));
+        pos_d.at(0) = static_cast<double>(pos.at(0));
+        pos_d.at(1) = static_cast<double>(pos.at(1));
+        pos_d.at(2) = static_cast<double>(pos.at(2));
+        std::vector<float> tau_cmd{0., 0., 0.};
+        RigidBodyDynamics::Math::VectorNd tau_d;
+        tau_d = rbdl_obj_.get_G(pos_d);
+        tau_cmd.at(0) = static_cast<float>(tau_d(0));
+        tau_cmd.at(1) = static_cast<float>(tau_d(1));
+        tau_cmd.at(2) = static_cast<float>(tau_d(2));
+        header_.stamp = ros::Time::now();
+        cmd_msg.header = header_;
+        cmd_msg.joint_cmds = tau_cmd;
+        pub_.publish(cmd_msg);
+    }
+
+private:
+    //attributes
+    std::vector<double> pos_d;
+    ros::Publisher pub_;
+    Dynamics rbdl_obj_;
+    ambf_msgs::ObjectCmd cmd_msg;
+    std_msgs::Header header_;
+};
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "subscriber");
+    ros::init(argc, argv, "FourBar_GravityComp");
     ros::NodeHandle nh;
-    std::cout << "I've been read" << std::endl;
-    ros::Subscriber sub = nh.subscribe("/ambf/env/l1/State", 1, StateCallback);
+    ros::Publisher pub = nh.advertise<ambf_msgs::ObjectCmd>("/ambf/env/l1/Command", 1000);
+    Ambf_sub_pub obj1(pub);
+    ros::Subscriber sub = nh.subscribe("/ambf/env/l1/State", 1, &Ambf_sub_pub::StateCallback, &obj1);
 
     ros::spin();
 

@@ -122,13 +122,13 @@ catkin_package(
 include_directories(
 include
   ${catkin_INCLUDE_DIRS}
-  ${RBDL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ./src ./ ./src/closed_loop_test
+  ${RBDL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ./src ./ ./src/MTM
 )
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   # src/main.cpp
-  src/closed_loop_test/main.cpp
+  src/MTM/main.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -139,7 +139,7 @@ add_library(${PROJECT_NAME}
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/closed_loop_test/main.cpp src/closed_loop_test/Dynamics.cpp)
+add_executable(${PROJECT_NAME}_node src/MTM/main.cpp src/MTM/Dynamics.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

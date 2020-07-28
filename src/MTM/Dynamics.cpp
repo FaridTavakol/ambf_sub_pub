@@ -37,3 +37,21 @@ VectorNd Dynamics::get_G_ClosedLoop(std::vector<double> pos)
     std::cout << cl_obj_.Tau << std::endl;
     return cl_obj_.Tau;
 }
+VectorNd Dynamics::get_G_MTM(std::vector<double> pos)
+{
+    std::cout << "something" << std::endl;
+    mtm_obj_.Q(0) = pos.at(0); // toppanel outpitch
+    mtm_obj_.Q(1) = pos.at(1); // outpitch armparallel
+    mtm_obj_.Q(2) = pos.at(2); // armparallel armparallel1
+    mtm_obj_.Q(3) = pos.at(3); // armParallel1 armfront
+    mtm_obj_.Q(4) = 0;         //pos.at(0);  // armfront virtual
+    mtm_obj_.Q(5) = pos.at(4);
+    mtm_obj_.Q(6) = pos.at(5);
+    mtm_obj_.Q(7) = pos.at(6);
+    mtm_obj_.Q(8) = pos.at(7);
+    mtm_obj_.Q(9) = pos.at(8);
+
+    InverseDynamics(mtm_obj_.model, mtm_obj_.Q, mtm_obj_.QDot, mtm_obj_.QDDot, mtm_obj_.Tau);
+    std::cout << mtm_obj_.Tau << std::endl;
+    return mtm_obj_.Tau;
+}

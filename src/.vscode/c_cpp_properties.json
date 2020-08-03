@@ -1,0 +1,37 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/aimlab/catkin_ws/devel/include/**",
+        "/home/aimlab/ambf/build/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/aimlab/ambf/ambf_ros_modules/ambf_comm/include/**",
+        "/home/aimlab/catkin_ws/src/ambf_sub_pub/include/**",
+        "/home/aimlab/catkin_ws/src/beginner_tutorial/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_ex_servo_cube/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_lib_cpp/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_test_measured/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_test_servo_cp/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_test_servo_cr/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_test_servo_cv/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_test_servo_jp/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_test_servo_jr/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_test_servo_jv/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_test_state/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_util_footkey/include/**",
+        "/home/aimlab/catkin_ws/src/crtk-cpp/src/crtk_util_holdpos/include/**",
+        "/home/aimlab/ambf/ambf_ros_modules/dvrk_arm/include/**",
+        "/home/aimlab/catkin_ws/src/location_monitor/include/**",
+        "/home/aimlab/catkin_ws/src/turtlebot3_simulations/turtlebot3_fake/include/**",
+        "/home/aimlab/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/include/**",
+        "/home/aimlab/catkin_ws/src/turtlebot3/turtlebot3_slam/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ]
+}

@@ -245,9 +245,9 @@ struct MTM_closed
         Vector3d inertia_e(0.00110227006662, 0.00000772914692154, 0.00110194245711);
         body_e = Body(0.15, com_e, inertia_e);
         Matrix3_t body_e_rot;
-        body_e_rot << -1.0, -0.0004, -0.002,
-            0.0004, -1.0, 0.0,
-            -0.002, 0.0, 1.0;
+        body_e_rot << 1.0, 0.0, 0.,
+            0.0, 1.0, 0.0,
+            0.0, 0.0, 1.0;
         Vector3d body_e_trans(0.101, 0.0, -0.03);
         SpatialTransform body_e_tf(body_e_rot, body_e_trans);
         body_e_id = model.AddBody(body_d_id, body_e_tf, joint_rev_z, body_e);
@@ -368,64 +368,3 @@ public:
     VectorNd get_G_ClosedLoop(std::vector<double> pos);
     VectorNd get_G_MTM(std::vector<double> pos);
 };
-
-// struct FourBarLinkage
-// {
-
-//     FourBarLinkage()
-//         : model(), cs(), q(), qd(), qdd(), tau(), l1(2.), l2(2.), m1(2.), m2(2.), idB1(0), idB2(0), idB3(0), idB4(0), idB5(0), X_p(Xtrans(Vector3d(l2, 0., 0.))), X_s(Xtrans(Vector3d(0., 0., 0.)))
-//     {
-
-//         Body link1 = Body(m1, Vector3d(0.5 * l1, 0., 0.), Vector3d(0., 0., m1 * l1 * l1 / 3.));
-//         Body link2 = Body(m2, Vector3d(0.5 * l2, 0., 0.), Vector3d(0., 0., m2 * l2 * l2 / 3.));
-//         Vector3d vector3d_zero = Vector3d::Zero();
-//         Body virtual_body(0., vector3d_zero, vector3d_zero);
-//         Joint joint_rev_z(JointTypeRevoluteZ);
-
-//         idB1 = model.AddBody(0, Xtrans(Vector3d(0., 0., 0.)),
-//                              joint_rev_z, link1);
-//         idB2 = model.AddBody(idB1, Xtrans(Vector3d(l1, 0., 0.)),
-//                              joint_rev_z, link2);
-//         idB3 = model.AddBody(0, Xtrans(Vector3d(0., 0., 0.)),
-//                              joint_rev_z, link1);
-//         idB4 = model.AddBody(idB3, Xtrans(Vector3d(l1, 0., 0.)),
-//                              joint_rev_z, link2);
-//         idB5 = model.AddBody(idB4, Xtrans(Vector3d(l2, 0., 0.)),
-//                              joint_rev_z, virtual_body);
-
-//         cs.AddLoopConstraint(idB2, idB5, X_p, X_s,
-//                              SpatialVector(0, 0, 0, 1, 0, 0), true, 0.1);
-//         cs.AddLoopConstraint(idB2, idB5, X_p, X_s,
-//                              SpatialVector(0, 0, 0, 0, 1, 0), true, 0.1);
-//         cs.AddLoopConstraint(idB2, idB5, X_p, X_s,
-//                              SpatialVector(0, 0, 1, 0, 0, 0), true, 0.1);
-
-//         cs.Bind(model);
-//         q = VectorNd::Zero(model.dof_count);
-//         qd = VectorNd::Zero(model.dof_count);
-//         qdd = VectorNd::Zero(model.dof_count);
-//         tau = VectorNd::Zero(model.dof_count);
-//     }
-
-//     Model model;
-//     ConstraintSet cs;
-
-//     VectorNd q;
-//     VectorNd qd;
-//     VectorNd qdd;
-//     VectorNd tau;
-
-//     double l1;
-//     double l2;
-//     double m1;
-//     double m2;
-
-//     unsigned int idB1;
-//     unsigned int idB2;
-//     unsigned int idB3;
-//     unsigned int idB4;
-//     unsigned int idB5;
-
-//     SpatialTransform X_p;
-//     SpatialTransform X_s;
-// };

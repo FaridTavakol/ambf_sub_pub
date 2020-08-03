@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include "Dynamics.h"
-#include <rbdl/rbdl.h>
+#include "/usr/local/include/rbdl/rbdl.h"
 
 using namespace RigidBodyDynamics;
 using namespace RigidBodyDynamics::Math;
@@ -51,7 +51,14 @@ VectorNd Dynamics::get_G_MTM(std::vector<double> pos)
     mtm_obj_.Q(8) = pos.at(7);
     mtm_obj_.Q(9) = pos.at(8);
 
-    InverseDynamics(mtm_obj_.model, mtm_obj_.Q, mtm_obj_.QDot, mtm_obj_.QDDot, mtm_obj_.Tau);
+    // InverseDynamicsConstraintsRelaxed(mtm_obj_.model, mtm_obj_.Q, mtm_obj_.QDot, mtm_obj_.QDDot, mtm_obj_.cs, mtm_obj_.QDDot, mtm_obj_.Tau);
+    std::cout << isConstrainedSystemFullyActuated(mtm_obj_.model, mtm_obj_.Q, mtm_obj_.QDot, mtm_obj_.cs) << std::endl;
+    std::vector<bool> actuatedDof(10, true);
+    actuatedDof.at(4) = false;
+    mtm_obj_.cs.SetActuationMap(mtm_obj_.model, actuatedDof);
+    InverseDynamicsConstraints(mtm_obj_.model, mtm_obj_.Q, mtm_obj_.QDot, mtm_obj_.QDDot, mtm_obj_.cs, mtm_obj_.QDDot, mtm_obj_.Tau);
+    // InverseDynamics(mtm_obj_.model, mtm_obj_.Q, mtm_obj_.QDot, mtm_obj_.QDDot, mtm_obj_.Tau);
+
     std::cout << mtm_obj_.Tau << std::endl;
     return mtm_obj_.Tau;
 }

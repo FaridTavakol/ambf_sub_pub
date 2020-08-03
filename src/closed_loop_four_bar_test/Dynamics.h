@@ -87,7 +87,7 @@ struct Four_bar_linkage_closed
         model.gravity = Vector3d(0., 0., -9.81);
 
         Vector3d com(0., -0.344, 0.);
-        Vector3d inertia(0.058907, 0.003295, 0.058907);
+        Vector3d inertia(0.0589073140693, 0.00329549139377, 0.0589073140693);
         Body body_a, body_b, body_c, body_d;
         Joint joint_a, joint_b, joint_c, joint_d, joint_v;
 
@@ -155,11 +155,11 @@ struct Four_bar_linkage_closed
         X_p = p_tf;
 
         cs.AddLoopConstraint(body_a_id, body_virtual_id, X_p, X_s,
-                             SpatialVector(0, 0, 0, 1, 0, 0), true, 0.1);
+                             SpatialVector(0, 0, 0, 1, 0, 0), true, 0.05);
         cs.AddLoopConstraint(body_a_id, body_virtual_id, X_p, X_s,
-                             SpatialVector(0, 0, 0, 0, 1, 0), true, 0.1);
+                             SpatialVector(0, 0, 0, 0, 1, 0), true, 0.05);
         cs.AddLoopConstraint(body_a_id, body_virtual_id, X_p, X_s,
-                             SpatialVector(0, 0, 1, 0, 0, 0), true, 0.1);
+                             SpatialVector(0, 0, 1, 0, 0, 0), true, 0.05);
 
         cs.Bind(model);
         //

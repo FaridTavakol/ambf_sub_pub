@@ -29,11 +29,17 @@ VectorNd Dynamics::get_G(std::vector<double> pos)
 }
 VectorNd Dynamics::get_G_ClosedLoop(std::vector<double> pos)
 {
+
+    std::cout << isConstrainedSystemFullyActuated(cl_obj_.model, cl_obj_.Q, cl_obj_.QDot, cl_obj_.cs) << std::endl;
+    std::vector<bool> actuatedDof(4, true);
+    actuatedDof.at(3) = false;
+    cl_obj_.cs.SetActuationMap(cl_obj_.model, actuatedDof);
+
     cl_obj_.Q(0) = pos.at(0);
     cl_obj_.Q(1) = pos.at(1);
     cl_obj_.Q(2) = pos.at(2);
-    cl_obj_.Q(3) = -pos.at(1); // Since this is the loop joint, no matter the joint position the Tau corresponding to this joint is always zero.
-    InverseDynamics(cl_obj_.model, cl_obj_.Q, cl_obj_.QDot, cl_obj_.QDDot, cl_obj_.Tau);
+    cl_obj_.Q(3) = 0; // Since this is the loop joint, no matter the joint position the Tau corresponding to this joint is always zero.
+    InverseDynamicsConstraints(cl_obj_.model, cl_obj_.Q, cl_obj_.QDot, cl_obj_.QDDot, cl_obj_.cs, cl_obj_.QDDot, cl_obj_.Tau);
     std::cout << cl_obj_.Tau << std::endl;
     return cl_obj_.Tau;
 }

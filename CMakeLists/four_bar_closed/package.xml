@@ -55,22 +55,18 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>rbdl</build_depend>
   <build_depend>Dynamics</build_depend>
-  <build_depend>test_models</build_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>ambf_msgs</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>rbdl</build_export_depend>
   <build_export_depend>Dynamics</build_export_depend>
-  <build_export_depend>test_models</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>ambf_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>rbdl</exec_depend>
   <exec_depend>Dynamics</exec_depend>
-  <exec_depend>test_models</exec_depend>
-
 
 
   <!-- The export tag contains other, unspecified, tags -->

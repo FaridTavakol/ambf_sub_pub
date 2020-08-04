@@ -30,18 +30,18 @@ public:
         pos_d(2) = static_cast<double>(pos.at(2));
         std::vector<float> tau_cmd{0., 0., 0.};
         VectorNd tau_d(rbdl_obj_.cl_obj_.model.dof_count);
-        Vector3d qdot(0.2, 0.1, 0.02);
-        // tau_d = rbdl_obj_.calc_EndEffectorVel(pos_d, qdot, rbdl_obj_.cl_obj_.body_d_id, Vector3d(0., 0., 0.));
-
-        // std::cout << tau_d << std::endl;
-        // tau_d = rbdl_obj_.calc_G(pos_d);
-        // tau_cmd.at(0) = static_cast<float>(tau_d(0));
-        // tau_cmd.at(1) = static_cast<float>(tau_d(1));
-        // tau_cmd.at(2) = static_cast<float>(tau_d(2));
-        // header_.stamp = ros::Time::now();
-        // cmd_msg.header = header_;
-        // cmd_msg.joint_cmds = tau_cmd;
-        // pub_.publish(cmd_msg);
+        // MatrixNd qdot;
+        // qdot = rbdl_obj_.calc_M(pos_d);
+        // std::cout << qdot << std::endl;
+        tau_d = rbdl_obj_.calc_G(pos_d);
+        std::cout << tau_d << std::endl;
+        tau_cmd.at(0) = static_cast<float>(tau_d(0));
+        tau_cmd.at(1) = static_cast<float>(tau_d(1));
+        tau_cmd.at(2) = static_cast<float>(tau_d(2));
+        header_.stamp = ros::Time::now();
+        cmd_msg.header = header_;
+        cmd_msg.joint_cmds = tau_cmd;
+        pub_.publish(cmd_msg);
     }
 
 private:
@@ -57,10 +57,9 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "FourBar_GravityComp");
     ros::NodeHandle nh("~");
-    // ros::Publisher pub = nh.advertise<ambf_msgs::ObjectCmd>("/ambf/env/l1/Command", 1000);
-    // Ambf_sub_pub obj1(pub);
-    // ros::Subscriber sub = nh.subscribe("/ambf/env/l1/State", 1, &Ambf_sub_pub::StateCallback, &obj1);
-    Dynamics test;
+    ros::Publisher pub = nh.advertise<ambf_msgs::ObjectCmd>("/ambf/env/l1/Command", 1000);
+    Ambf_sub_pub obj1(pub);
+    ros::Subscriber sub = nh.subscribe("/ambf/env/l1/State", 1, &Ambf_sub_pub::StateCallback, &obj1);
     ros::spin();
 
     return 0;

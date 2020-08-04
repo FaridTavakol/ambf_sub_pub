@@ -7,6 +7,7 @@
 #include "Dynamics.h"
 #include <rbdl/rbdl.h>
 #include <vector>
+#include <string>
 
 using namespace RigidBodyDynamics;
 using namespace RigidBodyDynamics::Math;
@@ -14,30 +15,53 @@ using namespace RigidBodyDynamics::Math;
 class Ambf_sub_pub
 {
 public:
-    //constructor
-    Ambf_sub_pub(const ros::Publisher &pub) : pub_(pub), rbdl_obj_(), pos_d(rbdl_obj_.cl_obj_.model.dof_count), cmd_msg(), header_()
+    Ambf_sub_pub(const ros::Publisher &pub) : pub_(pub), rbdl_obj_("kuka_lbr"), pos_d(), cmd_msg(), header_()
     {
         cmd_msg.enable_position_controller = 0;
         cmd_msg.position_controller_mask = {0};
+        pos_d = VectorNd::Zero(rbdl_obj_.model.dof_count);
     }
-    //methods
+
     void StateCallback(const ambf_msgs::ObjectState::ConstPtr &msg)
     {
         std::vector<float> pos = msg->joint_positions;
-        // ROS_INFO("joint 1 angle is: %f ", pos.at(0));
-        pos_d(0) = static_cast<double>(pos.at(0));
-        pos_d(1) = static_cast<double>(pos.at(1));
-        pos_d(2) = static_cast<double>(pos.at(2));
-        std::vector<float> tau_cmd{0., 0., 0.};
-        VectorNd tau_d(rbdl_obj_.cl_obj_.model.dof_count);
-        // MatrixNd qdot;
-        // qdot = rbdl_obj_.calc_M(pos_d);
-        // std::cout << qdot << std::endl;
+        if (pos.size() == pos_d.size())
+        {
+            for (int i = 0; i < rbdl_obj_.model.dof_count; i++)
+            {
+                pos_d(i) = static_cast<double>(pos.at(i));
+            }
+        }
+        else if (pos.size() < pos_d.size())
+        {
+            for (int i = 0; i < rbdl_obj_.model.dof_count - 1; i++)
+            {
+                pos_d(i) = static_cast<double>(pos.at(i));
+            }
+        }
+
+        std::vector<float> tau_cmd(rbdl_obj_.model.q_size, 0.);
+        VectorNd tau_d = VectorNd::Zero(rbdl_obj_.model.q_size);
+        VectorNd qdot = VectorNd::Zero(rbdl_obj_.model.qdot_size);
+        // tau_d = rbdl_obj_.calc_InverseDynamicsConstrained(pos_d, qdot, qdot, rbdl_obj_.four_bar_obj_.cs, qdot, tau_d);
+
         tau_d = rbdl_obj_.calc_G(pos_d);
-        std::cout << tau_d << std::endl;
-        tau_cmd.at(0) = static_cast<float>(tau_d(0));
-        tau_cmd.at(1) = static_cast<float>(tau_d(1));
-        tau_cmd.at(2) = static_cast<float>(tau_d(2));
+
+        if (tau_cmd.size() == tau_d.size())
+        {
+            for (int i = 0; i < rbdl_obj_.model.dof_count; i++)
+            {
+                tau_cmd.at(i) = static_cast<float>(tau_d(i));
+            }
+        }
+        else if (tau_cmd.size() == tau_d.size())
+        {
+            for (int i = 0; i < rbdl_obj_.model.dof_count - 1; i++)
+            {
+                tau_cmd.at(i) = static_cast<float>(tau_d(i));
+            }
+        }
+
         header_.stamp = ros::Time::now();
         cmd_msg.header = header_;
         cmd_msg.joint_cmds = tau_cmd;
@@ -57,9 +81,13 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "FourBar_GravityComp");
     ros::NodeHandle nh("~");
-    ros::Publisher pub = nh.advertise<ambf_msgs::ObjectCmd>("/ambf/env/l1/Command", 1000);
+    ros::Publisher pub = nh.advertise<ambf_msgs::ObjectCmd>("/ambf/env/base/Command", 1000);
     Ambf_sub_pub obj1(pub);
-    ros::Subscriber sub = nh.subscribe("/ambf/env/l1/State", 1, &Ambf_sub_pub::StateCallback, &obj1);
+    ros::Subscriber sub = nh.subscribe("/ambf/env/base/State", 1, &Ambf_sub_pub::StateCallback, &obj1);
+    // Dynamics object("four_bar_linkage");
+    // VectorNd pos_d = VectorNd::Zero(object.four_bar_obj_.model.dof_count);
+    // std::cout << pos_d << std::endl;
+
     ros::spin();
 
     return 0;

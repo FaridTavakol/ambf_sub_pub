@@ -109,7 +109,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES ambf_sub_pub
  CATKIN_DEPENDS 
- roscpp std_msgs geometry_msgs ambf_msgs Dynamics rbdl test_models
+ roscpp std_msgs geometry_msgs ambf_msgs Dynamics rbdl
 #  DEPENDS system_lib
 )
 
@@ -122,13 +122,13 @@ catkin_package(
 include_directories(
 include
   ${catkin_INCLUDE_DIRS}
-  ${RBDL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ./src ./ ./src/Test_functions
+  ${RBDL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ./src ./ ./src/MTM
 )
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   # src/main.cpp
-  src/Test_functions/main.cpp
+  src/MTM/main.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -139,7 +139,7 @@ add_library(${PROJECT_NAME}
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/Test_functions/main.cpp src/Test_functions/Dynamics.cpp)
+add_executable(${PROJECT_NAME}_node src/MTM/main.cpp src/MTM/Dynamics.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

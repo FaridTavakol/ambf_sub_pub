@@ -103,6 +103,7 @@ struct Four_bar_linkage_closed
         Vector3d body_a_trans(0.001, -0.36, -0.222);
         SpatialTransform body_a_tf(body_a_rot, body_a_trans);
         body_a_id = model.AddBody(0, body_a_tf, joint_a, body_a);
+
         // body b
         body_b = Body(mass, com, inertia);
         joint_b = Joint(JointTypeRevolute, Vector3d(0., 0., 1.));
@@ -206,7 +207,7 @@ struct MTM_closed
             0., 0., 1.;
         Vector3d body_a_trans(0.0, 0.0, 0.0);
         SpatialTransform body_a_tf(body_a_rot, body_a_trans);
-        body_a_id = model.AddBody(0, body_a_tf, joint_fix, body_a);
+        body_a_id = model.AddBody(0, body_a_tf, joint_fix, body_a);// world_frame -> Top_Panel
         // body b shoulder pitch
         Vector3d com_b(0.003, 0.035, -0.119);
         Vector3d inertia_b(0.00917612905846, 0.00935165844593, 0.00447358060957);
@@ -217,7 +218,7 @@ struct MTM_closed
             0.0, 0.0, 1.0;
         Vector3d body_b_trans(0.0, 0.0, 0.);
         SpatialTransform body_b_tf(body_b_rot, body_b_trans);
-        body_b_id = model.AddBody(body_a_id, body_b_tf, joint_rev_z, body_b);
+        body_b_id = model.AddBody(body_a_id, body_b_tf, joint_rev_z, body_b);// Top_Panel -> OutPitchShoulder
         // body c arm parallel
         Vector3d com_c(-0.109, 0.012, 0.02);
         Vector3d inertia_c(0.0028003998026, 0.0134169293445, 0.0113575925399);
@@ -228,7 +229,7 @@ struct MTM_closed
             -0.005, 1.0, 0.0;
         Vector3d body_c_trans(0.0, 0.0, -0.19);
         SpatialTransform body_c_tf(body_c_rot, body_c_trans);
-        body_c_id = model.AddBody(body_b_id, body_c_tf, joint_rev_z, body_c);
+        body_c_id = model.AddBody(body_b_id, body_c_tf, joint_rev_z, body_c);// OutPitchShoulder -> ArmParallel
         // body d arm parallel 1
         Vector3d com_d(0.038, 0.0, -0.007);
         Vector3d inertia_d(0.000104513350282, 0.000324014608013, 0.000373281422509);
@@ -239,7 +240,7 @@ struct MTM_closed
             0.0, 0.0, 1.0;
         Vector3d body_d_trans(0.0, 0.0, 0.065);
         SpatialTransform body_d_tf(body_d_rot, body_d_trans);
-        body_d_id = model.AddBody(body_c_id, body_d_tf, joint_rev_z, body_d);
+        body_d_id = model.AddBody(body_c_id, body_d_tf, joint_rev_z, body_d); // ArmParallel -> ArmParallel_1
         // body e arm front
         Vector3d com_e(0.0, -0.14, -0.007);
         Vector3d inertia_e(0.00110227006662, 0.00000772914692154, 0.00110194245711);
@@ -250,7 +251,7 @@ struct MTM_closed
             0.0, 0.0, 1.0;
         Vector3d body_e_trans(0.101, 0.0, -0.03);
         SpatialTransform body_e_tf(body_e_rot, body_e_trans);
-        body_e_id = model.AddBody(body_d_id, body_e_tf, joint_rev_z, body_e);
+        body_e_id = model.AddBody(body_d_id, body_e_tf, joint_rev_z, body_e);// ArmParallel_1 -> ArmFront
         // virtual body end of arm front joint location with bottom arm
         Vector3d vector3d_zero = Vector3d::Zero();
         Body body_v(virtual_mass, vector3d_zero, vector3d_zero);  // creating the virtual body
@@ -261,7 +262,7 @@ struct MTM_closed
             -0.002, 0.0, 1.0;
         Vector3d body_v_trans(0.0, -0.28, -0.035);
         SpatialTransform body_v_tf(body_v_rot, body_v_trans);
-        body_virtual_id = model.AddBody(body_e_id, body_v_tf, joint_v, body_v);
+        body_virtual_id = model.AddBody(body_e_id, body_v_tf, joint_v, body_v);// ArmFront -> VirtualBody
         // body f(bottom Arm)
         Vector3d com_f(-0.188, -0.008, 0.0);
         Vector3d inertia_f(0.000255941352746, 0.0105760140742, 0.0105499806308);
@@ -272,7 +273,7 @@ struct MTM_closed
             0.0, 0.0, 1.0;
         Vector3d body_f_trans(-0.279, -0.0, 0.0);
         SpatialTransform body_f_tf(body_f_rot, body_f_trans);
-        body_f_id = model.AddBody(body_c_id, body_f_tf, joint_rev_z, body_f);
+        body_f_id = model.AddBody(body_c_id, body_f_tf, joint_rev_z, body_f); // ArmParallel -> BottomArm
         // body g wrist platform
         Vector3d com_g(0.0, -0.055, -0.054);
         Vector3d inertia_g(0.00154079803571, 0.000741331628791, 0.000993883092147);
@@ -283,7 +284,7 @@ struct MTM_closed
             0.0, -1.0, 0.0;
         Vector3d body_g_trans(-0.364, -0.15, -0.0);
         SpatialTransform body_g_tf(body_g_rot, body_g_trans);
-        body_g_id = model.AddBody(body_f_id, body_g_tf, joint_rev_z, body_g);
+        body_g_id = model.AddBody(body_f_id, body_g_tf, joint_rev_z, body_g);// BottomArm -> WristPlatform
         // body h wrist pitch
         Vector3d com_h(0.0, 0.041, -0.037);
         Vector3d inertia_h(0.000397858856814, 0.000210744513123, 0.000223359835719);
@@ -294,7 +295,7 @@ struct MTM_closed
             0.0, 1.0, 0.0;
         Vector3d body_h_trans(0.0, 0.0, 0.0);
         SpatialTransform body_h_tf(body_h_rot, body_h_trans);
-        body_h_id = model.AddBody(body_g_id, body_h_tf, joint_rev_z, body_h);
+        body_h_id = model.AddBody(body_g_id, body_h_tf, joint_rev_z, body_h);// WristPlatform -> WristPitch
         // body i wrist yaw
         Vector3d com_i(-0.109, 0.012, 0.02);
         Vector3d inertia_i(0.000249325233144, 0.000131620327094, 0.000131620327094);
@@ -305,7 +306,7 @@ struct MTM_closed
             0.0, -1.0, 0.0;
         Vector3d body_i_trans(0.0, 0.002, 0.);
         SpatialTransform body_i_tf(body_i_rot, body_i_trans);
-        body_i_id = model.AddBody(body_h_id, body_i_tf, joint_rev_z, body_i);
+        body_i_id = model.AddBody(body_h_id, body_i_tf, joint_rev_z, body_i);// WristPitch -> WristYaw
         // body j wrist roll
         Vector3d com_j(0.0, 0.0, -0.036);
         Vector3d inertia_j(0.00006, 0.000056, 0.000029);
@@ -316,7 +317,7 @@ struct MTM_closed
             0.009, -1.0, 0.0;
         Vector3d body_j_trans(0.0, -0.039, -0.0);
         SpatialTransform body_j_tf(body_j_rot, body_j_trans);
-        body_j_id = model.AddBody(body_i_id, body_j_tf, joint_rev_z, body_j);
+        body_j_id = model.AddBody(body_i_id, body_j_tf, joint_rev_z, body_j);// WristYaw -> WristRoll
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
         Matrix3_t p_rot;
@@ -326,13 +327,13 @@ struct MTM_closed
         Vector3d p_trans(-0.101, 0.001, 0.0);
         SpatialTransform p_tf(p_rot, p_trans); // predecessor body is Bottom arm
         X_p = p_tf;
-
+        double stabilization{1};
         cs.AddLoopConstraint(body_f_id, body_virtual_id, X_p, X_s,
-                             SpatialVector(0, 0, 0, 1, 0, 0), true, 0.1);
+                             SpatialVector(0, 0, 0, 1, 0, 0), true, stabilization);
         cs.AddLoopConstraint(body_f_id, body_virtual_id, X_p, X_s,
-                             SpatialVector(0, 0, 0, 0, 1, 0), true, 0.1);
+                             SpatialVector(0, 0, 0, 0, 1, 0), true, stabilization);
         cs.AddLoopConstraint(body_f_id, body_virtual_id, X_p, X_s,
-                             SpatialVector(0, 0, 1, 0, 0, 0), true, 0.1);
+                             SpatialVector(0, 0, 1, 0, 0, 0), true, stabilization);
 
         cs.Bind(model);
         //

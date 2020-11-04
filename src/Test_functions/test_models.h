@@ -204,3 +204,133 @@ struct KUKA_LBR
     double mass;
     unsigned int body_l1_id, body_l2_id, body_l3_id, body_l4_id, body_l5_id, body_l6_id, body_l7_id, body_base_id;
 };
+struct Raven_II
+{ /*constructor for the struct*/
+    Raven_II() : model(), Q(), QDot(), QDDot(), Tau(), body_a_id(), body_b_id(), body_c_id(), body_d_id(), body_e_id(), body_f_id(), body_g_id(), body_h_id(), body_i_id(), mass(0), mass_c(0.5031), mass_d(0.7503), mass_e(0.4066), mass_f(0.03), mass_g(0.005), mass_h(0.005), mass_i(0.005)
+    {
+        using namespace RigidBodyDynamics;
+        using namespace RigidBodyDynamics::Math;
+        model.gravity = Vector3d(0., 0., -9.81);
+        Body body_a, body_b, body_c, body_d, body_e, body_f, body_g, body_h, body_i;
+        Joint joint_rev_z, joint_fix, joint_prismatic;
+        joint_fix = Joint(JointTypeFixed);
+        joint_rev_z = Joint(JointTypeRevoluteZ);
+        Math::Vector3d prismatic_joint_Z_axis(0, 0, 1);
+        joint_prismatic = Joint(JointTypePrismatic, prismatic_joint_Z_axis);
+
+        // body a 0_link
+        Vector3d com_a(0.0, 0.0, 0.0);
+        Vector3d inertia_a(0.01, 0.01, 0.01); // Fixed Link; Set to an arbitrary value.
+        body_a = Body(1., com_a, inertia_a);  /*mass, com, inertia*/
+        Matrix3_t body_a_rot;
+        body_a_rot << 1., 0., 0.,
+            0., 1., 0.,
+            0., 0., 1.;
+        Vector3d body_a_trans(0.0, 0.0, 0.0);
+        SpatialTransform body_a_tf(body_a_rot, body_a_trans);
+        body_a_id = model.AddBody(0, body_a_tf, joint_fix, body_a); // world_frame -> Top_Panel
+        // body b BaseLink
+        Vector3d com_b(0.101, 0.003, -0.343);
+        Vector3d inertia_b(0.01, 0.01, 0.01); // Fixed Link; Set to an arbitrary value.
+        body_b = Body(1., com_b, inertia_b);
+        Matrix3_t body_b_rot;
+        body_b_rot << 0.0, -.4223, 0.9064,
+            0.0, 0.9064, 0.4223,
+            -1.0, 0.0, 1.0;
+        Vector3d body_b_trans(0.68, 0.0, 0.);
+        SpatialTransform body_b_tf(body_b_rot, body_b_trans);
+        body_b_id = model.AddBody(body_a_id, body_b_tf, joint_fix, body_b);
+        // body c link1_L
+        Vector3d com_c(0.00691, -0.09869, -0.13755);
+        Vector3d inertia_c(0.0033749403655041078, 0.001977863356079949, 0.0021270204561928616);
+        body_c = Body(mass_c, com_c, inertia_c);
+        Matrix3_t body_c_rot;
+        body_c_rot << 1.0, 0.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 0.0, 1.0;
+        Vector3d body_c_trans(0.0, 0.0, 0.0);
+        SpatialTransform body_c_tf(body_c_rot, body_c_trans);
+        body_c_id = model.AddBody(body_b_id, body_c_tf, joint_rev_z, body_c);
+        // body d Link2_L
+        Vector3d com_d(-0.1791, -0.0012, -0.2339);
+        Vector3d inertia_d(0.00967712207073078, 0.022389501955926035, 0.017408573487153342);
+        body_c = Body(mass_d, com_d, inertia_d);
+        Matrix3_t body_d_rot;
+        body_d_rot << 0.2591, 0.3577, -0.8972,
+            -0.9013, -0.2443, -0.3577,
+            -0.3471, 0.9013, 0.2591;
+        Vector3d body_d_trans(0.0, 0.0, 0.0);
+        SpatialTransform body_d_tf(body_d_rot, body_d_trans);
+        body_d_id = model.AddBody(body_c_id, body_d_tf, joint_rev_z, body_d);
+        // body e Link3_L
+        Vector3d com_e(0.02, 0.0002, -0.013);
+        Vector3d inertia_e(0.0004467903226185586, 0.0009051225993916976, 0.0008211608194419769);
+        body_e = Body(mass_e, com_e, inertia_e);
+        Matrix3_t body_e_rot;
+        body_e_rot << -0.732, -0.2910, -0.6160,
+            0.6667, -0.1197, -0.7357,
+            0.1403, -0.9492, 0.2816;
+        Vector3d body_e_trans(0.0, 0.0, 0.0);
+        SpatialTransform body_e_tf(body_e_rot, body_e_trans);
+        body_e_id = model.AddBody(body_d_id, body_e_tf, joint_prismatic, body_e);
+
+        // body f instrument_shaft_L
+        Vector3d com_f(0.0, 0.0, 0.203);
+        Vector3d inertia_f(0.00042169818913851244, 0.0004217093404704866, 0.000000724249554848345);
+        body_f = Body(mass_f, com_f, inertia_f);
+        Matrix3_t body_f_rot;
+        body_f_rot << 0.0, 0.9964, 0.0851,
+            0.0, -0.0851, 0.9964,
+            1.0, 0.0, 0.0;
+        Vector3d body_f_trans(0.0, -0.0, 0.0);
+        SpatialTransform body_f_tf(body_f_rot, body_f_trans);
+        body_f_id = model.AddBody(body_e_id, body_f_tf, joint_rev_z, body_f);
+        // body g wrist_L
+        Vector3d com_g(0.003, 0.005, 0.0);
+        Vector3d inertia_g(0.00000020095525644163873, 0.00000013945284783322136, 0.00000030822521083055677);
+        body_g = Body(mass_g, com_g, inertia_g);
+        Matrix3_t body_g_rot;
+        body_g_rot << 0.8211, 0.2840, -0.4951,
+            -0.4671, -0.1640, -0.8689,
+            -0.3279, 0.9447, -0.002;
+        Vector3d body_g_trans(0.0, 0.0, 0.0);
+        SpatialTransform body_g_tf(body_g_rot, body_g_trans);
+        body_g_id = model.AddBody(body_f_id, body_g_tf, joint_rev_z, body_g);
+        // body h grasper1_L
+        Vector3d com_h(-0.001, 0.008, -0.001);
+        Vector3d inertia_h(0.00000031410672396849284, 0.0000009660967365269243, 0.000000362228221890901);
+        body_h = Body(mass_h, com_h, inertia_h);
+        Matrix3_t body_h_rot;
+        body_h_rot << -0.13120, -0.2302, 0.9643,
+            0.4773, 0.8378, 0.2650,
+            -0.8689, 0.0110, -0.001;
+        Vector3d body_h_trans(0.005, 0.011, -0.001);
+        SpatialTransform body_h_tf(body_h_rot, body_h_trans);
+        body_h_id = model.AddBody(body_g_id, body_h_tf, joint_rev_z, body_h);
+        // body i grasper2_L
+        Vector3d com_i(-0.109, 0.012, 0.02);
+        Vector3d inertia_i(0.0000023204375151742027, 0.00000019345183535918817, 0.0000003762236684889556);
+        body_i = Body(mass_i, com_i, inertia_i);
+        Matrix3_t body_i_rot;
+        body_i_rot << 0.3427, 0.3571, 0.8689,
+            0.6016, 0.6269, -0.4950,
+            -0.7215, 0.6924, 0.0;
+        Vector3d body_i_trans(0.005, 0.011, -0.001);
+        SpatialTransform body_i_tf(body_i_rot, body_i_trans);
+        body_i_id = model.AddBody(body_g_id, body_i_tf, joint_rev_z, body_i);
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+        Q = VectorNd::Zero(model.dof_count);
+        QDot = VectorNd::Zero(model.dof_count);
+        Tau = VectorNd::Zero(model.dof_count);
+        QDDot = VectorNd::Zero(model.dof_count);
+        std::cout << model.dof_count << "is dof size" << std::endl;
+    }
+
+    RigidBodyDynamics::Model model;
+    RigidBodyDynamics::Math::VectorNd Q;
+    RigidBodyDynamics::Math::VectorNd QDot;
+    RigidBodyDynamics::Math::VectorNd QDDot;
+    RigidBodyDynamics::Math::VectorNd Tau;
+    double mass_c, mass_d, mass_e, mass_f, mass_g, mass_h, mass_i;
+    unsigned int body_a_id, body_b_id, body_c_id, body_d_id, body_e_id, body_f_id, body_g_id, body_h_id, body_i_id;
+};

@@ -20,11 +20,19 @@ Dynamics::Dynamics(std::string robot_model)
         KUKA_LBR kuka_obj_;
         model = four_bar_obj_.model;
     }
+    else if (robot_model == "Raven_II")
+    {
+        Four_bar_linkage four_bar_obj_;
+        KUKA_LBR kuka_obj_;
+        Raven_II Raven_2;
+        model = Raven_2.model;
+    }
     else
     {
         std::cerr << "Invalid entry!\n";
         std::cerr << "To create the KUKA model enter: kuka_lbr\n";
         std::cerr << "To create the four-bar linkage model enter: four_bar_linkage\n";
+        std::cerr << "To create the Raven_II model enter: Raven_II\n";
     }
 };
 

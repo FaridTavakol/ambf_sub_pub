@@ -15,7 +15,7 @@ using namespace RigidBodyDynamics::Math;
 class Ambf_sub_pub
 {
 public:
-    Ambf_sub_pub(const ros::Publisher &pub) : pub_(pub), rbdl_obj_("kuka_lbr"), pos_d(), cmd_msg(), header_()
+    Ambf_sub_pub(const ros::Publisher &pub) : pub_(pub), rbdl_obj_("Raven_II"), pos_d(), cmd_msg(), header_()
     {
         cmd_msg.enable_position_controller = 0;
         cmd_msg.position_controller_mask = {0};
@@ -79,11 +79,11 @@ private:
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "FourBar_GravityComp");
+    ros::init(argc, argv, "Raven");
     ros::NodeHandle nh("~");
-    ros::Publisher pub = nh.advertise<ambf_msgs::ObjectCmd>("/ambf/env/base/Command", 1000);
+    ros::Publisher pub = nh.advertise<ambf_msgs::ObjectCmd>("/ambf/env/raven_2/0_link/Command", 1000);
     Ambf_sub_pub obj1(pub);
-    ros::Subscriber sub = nh.subscribe("/ambf/env/base/State", 1, &Ambf_sub_pub::StateCallback, &obj1);
+    ros::Subscriber sub = nh.subscribe("/ambf/env/raven_2/0_link/State", 1, &Ambf_sub_pub::StateCallback, &obj1);
     // Dynamics object("four_bar_linkage");
     // VectorNd pos_d = VectorNd::Zero(object.four_bar_obj_.model.dof_count);
     // std::cout << pos_d << std::endl;
